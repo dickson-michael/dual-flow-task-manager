@@ -1,0 +1,22 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "Michael Dickson"
+            }
+        ],
+        "Category": "Windows and Tasks",
+        "Description": "Task manager that displays open windows from left to right with icons and text, and minimized windows from right to left with icons only.",
+        "Icon": "preferences-system-windows",
+        "Id": "com.example.plasma.splitflowtasks",
+        "License": "GPL-2.0-or-later",
+        "Name": "Dual Flow Task Manager (Icons + Text & Minimized Icons)",
+        "Version": "0.0.1",
+        "Website": "https://github.com/dickson-michael/dual-flow-task-manager"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-Provides": [
+        "org.kde.plasma.multitasking"
+    ]
+}

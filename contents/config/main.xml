@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+
+  <group name="General">
+    <entry name="openGroupingStrategy" type="Int">
+      <label>Grouping strategy for open windows: 0 = No grouping, 1 = Compact window list popup, 2 = Present Windows (Exposé) effect, 3 = Bring application to foreground</label>
+      <default>1</default>
+      <min>0</min>
+      <max>3</max>
+    </entry>
+    <entry name="showOnlyCurrentScreen" type="Bool">
+      <label>Whether to show only tasks on the current screen.</label>
+      <default>false</default>
+    </entry>
+    <entry name="showOnlyCurrentDesktop" type="Bool">
+      <label>Whether to show only tasks on the current virtual desktop.</label>
+      <default>true</default>
+    </entry>
+    <entry name="showOnlyCurrentActivity" type="Bool">
+      <label>Whether to show only tasks on the current activity.</label>
+      <default>true</default>
+    </entry>
+    <entry name="minimizeActiveTaskOnClick" type="Bool">
+      <label>Whether clicking the currently active task minimizes it.</label>
+      <default>true</default>
+    </entry>
+    <entry name="middleClickAction" type="Int">
+      <label>Middle click action: 0 = Close, 1 = ToggleMinimized, 2 = NewInstance</label>
+      <default>0</default>
+    </entry>
+    <entry name="pushMinimizedToRight" type="Bool">
+      <label>Whether to push minimized windows to the right side of the panel with a spacer.</label>
+      <default>true</default>
+    </entry>
+    <entry name="reverseMinimized" type="Bool">
+      <label>Whether minimized windows flow from right to left.</label>
+      <default>true</default>
+    </entry>
+    <entry name="maxTaskWidth" type="Int">
+      <label>Maximum width for open task buttons.</label>
+      <default>220</default>
+      <min>80</min>
+      <max>600</max>
+    </entry>
+    <entry name="minTaskWidth" type="Int">
+      <label>Minimum width for open task buttons (buttons shrink to this before clipping).</label>
+      <default>48</default>
+      <min>32</min>
+      <max>400</max>
+    </entry>
+    <entry name="dimMinimizedIcons" type="Bool">
+      <label>Whether to slightly dim minimized icons until hovered.</label>
+      <default>true</default>
+    </entry>
+    <entry name="showToolTips" type="Bool">
+      <label>Whether to show tooltips when hovering task buttons.</label>
+      <default>true</default>
+    </entry>
+  </group>
+</kcfg>
