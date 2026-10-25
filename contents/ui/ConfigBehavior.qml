@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Layouts
 import org.kde.kcmutils as KCMUtils
 import org.kde.kirigami as Kirigami
 
@@ -13,6 +12,7 @@ KCMUtils.SimpleKCM {
     property alias cfg_showOnlyCurrentActivity: showOnlyCurrentActivityCheckBox.checked
     property alias cfg_minimizeActiveTaskOnClick: minimizeActiveTaskOnClickCheckBox.checked
     property alias cfg_middleClickAction: middleClickActionComboBox.currentIndex
+    property alias cfg_groupMinimizedByApplication: groupMinimizedByApplicationCheckBox.checked
 
     Kirigami.FormLayout {
         Item {
@@ -31,11 +31,10 @@ KCMUtils.SimpleKCM {
             ]
         }
 
-        Kirigami.InlineMessage {
-            Layout.fillWidth: true
-            visible: true
-            type: Kirigami.MessageType.Information
-            text: i18n("Note: Minimized windows always remain ungrouped as individual icons on the right side.")
+        QQC2.CheckBox {
+            id: groupMinimizedByApplicationCheckBox
+            Kirigami.FormData.label: i18n("Minimized windows:")
+            text: i18n("Group minimized windows by application")
         }
 
         Item {

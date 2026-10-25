@@ -9,29 +9,10 @@ KCMUtils.SimpleKCM {
 
     property alias cfg_maxTaskWidth: maxTaskWidthSpinBox.value
     property alias cfg_minTaskWidth: minTaskWidthSpinBox.value
-    property alias cfg_pushMinimizedToRight: pushMinimizedToRightCheckBox.checked
-    property alias cfg_reverseMinimized: reverseMinimizedCheckBox.checked
     property alias cfg_dimMinimizedIcons: dimMinimizedIconsCheckBox.checked
     property alias cfg_showToolTips: showToolTipsCheckBox.checked
 
     Kirigami.FormLayout {
-        Item {
-            Kirigami.FormData.isSection: true
-            Kirigami.FormData.label: i18n("Layout & Placement")
-        }
-
-        QQC2.CheckBox {
-            id: pushMinimizedToRightCheckBox
-            Kirigami.FormData.label: i18n("Docking:")
-            text: i18n("Push minimized windows to right edge of panel")
-        }
-
-        QQC2.CheckBox {
-            id: reverseMinimizedCheckBox
-            Kirigami.FormData.label: i18n("Minimized Flow:")
-            text: i18n("Flow minimized windows from right to left")
-        }
-
         Item {
             Kirigami.FormData.isSection: true
             Kirigami.FormData.label: i18n("Task Item Sizing")

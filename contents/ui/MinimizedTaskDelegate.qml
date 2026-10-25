@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
 import org.kde.ksvg as KSvg
+import org.kde.plasma.components as PlasmaComponents3
 import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.plasma.plasmoid
@@ -19,6 +20,9 @@ Item {
 
     readonly property Item appletRoot: plasmoidRoot || (typeof root !== "undefined" ? root : null)
     readonly property var targetModelIndex: tasksModel ? tasksModel.makeModelIndex(index) : null
+    readonly property bool isGroup: model.IsGroupParent ?? false
+    readonly property int groupCount: Math.max(model.ChildCount ?? 1, 1)
+    readonly property bool groupByApplication: Plasmoid?.configuration?.groupMinimizedByApplication ?? false
 
     // Compact square icon-only button sizing
     implicitWidth: vertical ? parent.width : parent.height
@@ -61,6 +65,69 @@ Item {
         }
     }
 
+    function bringAllToForegroundAndCycle(): void {
+        if (!tasksModel || !targetModelIndex) {
+            return;
+        }
+        const count = tasksModel.rowCount(targetModelIndex);
+        if (count <= 0) {
+            tasksModel.requestToggleMinimized(targetModelIndex);
+            tasksModel.requestActivate(targetModelIndex);
+            return;
+        }
+
+        let activeChildIndex = -1;
+        for (let i = 0; i < count; ++i) {
+            const childIdx = tasksModel.makeModelIndex(index, i);
+            if (tasksModel.data(childIdx, TaskManager.AbstractTasksModel.IsActive)) {
+                activeChildIndex = i;
+                break;
+            }
+        }
+
+        if (activeChildIndex !== -1) {
+            const nextIndex = (activeChildIndex + 1) % count;
+            const targetChild = tasksModel.makeModelIndex(index, nextIndex);
+            tasksModel.requestToggleMinimized(targetChild);
+            tasksModel.requestActivate(targetChild);
+        } else {
+            for (let i = count - 1; i >= 0; --i) {
+                const childIdx = tasksModel.makeModelIndex(index, i);
+                tasksModel.requestToggleMinimized(childIdx);
+                tasksModel.requestActivate(childIdx);
+            }
+        }
+    }
+
+    function activateGroup(): void {
+        const count = tasksModel.rowCount(targetModelIndex);
+        const strategy = Plasmoid?.configuration?.openGroupingStrategy ?? 1;
+        if (strategy === 1) {
+            appletRoot?.groupDialog?.openForTask(minTaskItem);
+        } else if (strategy === 2) {
+            const winIds = model.WinIdList;
+            if (appletRoot?.effectWatcherRegistered && winIds && winIds.length > 0) {
+                appletRoot.activatePresentWindows(winIds);
+            } else {
+                appletRoot?.groupDialog?.openForTask(minTaskItem);
+            }
+        } else if (strategy === 3) {
+            if (count > 0) {
+                bringAllToForegroundAndCycle();
+            } else {
+                tasksModel.requestToggleMinimized(targetModelIndex);
+                tasksModel.requestActivate(targetModelIndex);
+            }
+        } else if (count > 0) {
+            const firstChild = tasksModel.makeModelIndex(index, 0);
+            tasksModel.requestToggleMinimized(firstChild);
+            tasksModel.requestActivate(firstChild);
+        } else {
+            tasksModel.requestToggleMinimized(targetModelIndex);
+            tasksModel.requestActivate(targetModelIndex);
+        }
+    }
+
     // Breeze SVG background frame
     KSvg.FrameSvgItem {
         id: frame
@@ -89,6 +156,29 @@ Item {
 
         Behavior on opacity {
             NumberAnimation { duration: Kirigami.Units.shortDuration }
+        }
+    }
+
+    Rectangle {
+        anchors {
+            top: parent.top
+            right: parent.right
+            topMargin: 2
+            rightMargin: 2
+        }
+        width: Math.max(groupBadgeLabel.implicitWidth + 6, 14)
+        height: 14
+        radius: 7
+        color: Kirigami.Theme.highlightColor
+        visible: minTaskItem.groupByApplication
+
+        PlasmaComponents3.Label {
+            id: groupBadgeLabel
+            anchors.centerIn: parent
+            text: minTaskItem.groupCount.toString()
+            font.pixelSize: Kirigami.Units.gridUnit * 0.65
+            font.weight: Font.Bold
+            color: Kirigami.Theme.highlightedTextColor
         }
     }
 
@@ -131,7 +221,9 @@ Item {
         active: (Plasmoid?.configuration?.showToolTips ?? true)
             && (!contextMenu || contextMenu.status !== PlasmaExtras.Menu.Open)
         mainText: minTaskItem.model.AppName || minTaskItem.model.display || ""
-        subText: (minTaskItem.model.AppName && minTaskItem.model.AppName !== minTaskItem.model.display) ? minTaskItem.model.display : ""
+        subText: minTaskItem.groupByApplication
+            ? i18n("%1 minimized windows", minTaskItem.groupCount)
+            : ((minTaskItem.model.AppName && minTaskItem.model.AppName !== minTaskItem.model.display) ? minTaskItem.model.display : "")
         icon: minTaskItem.model.decoration
     }
 
@@ -144,9 +236,12 @@ Item {
 
         onClicked: mouse => {
             if (mouse.button === Qt.LeftButton) {
-                // Clicking a minimized task unminimizes and activates it
-                minTaskItem.tasksModel.requestToggleMinimized(minTaskItem.targetModelIndex);
-                minTaskItem.tasksModel.requestActivate(minTaskItem.targetModelIndex);
+                if (minTaskItem.groupByApplication) {
+                    minTaskItem.activateGroup();
+                } else {
+                    minTaskItem.tasksModel.requestToggleMinimized(minTaskItem.targetModelIndex);
+                    minTaskItem.tasksModel.requestActivate(minTaskItem.targetModelIndex);
+                }
             } else if (mouse.button === Qt.MiddleButton) {
                 const action = Plasmoid?.configuration?.middleClickAction ?? 0;
                 if (action === 0) {

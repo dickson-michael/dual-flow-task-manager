@@ -76,20 +76,17 @@ PlasmaCore.PopupPlasmaWindow {
         visualParent = taskItem;
 
         windowsListModel.clear();
-        const count = tasksModel.rowCount(taskItem.targetModelIndex);
-        if (count <= 0) {
-            tasksModel.requestActivate(taskItem.targetModelIndex);
-            return;
-        }
+        const childCount = tasksModel.rowCount(taskItem.targetModelIndex);
+        const count = childCount > 0 ? childCount : 1;
 
         for (let i = 0; i < count; ++i) {
-            const childIdx = tasksModel.makeModelIndex(taskItem.index, i);
+            const childIdx = childCount > 0 ? tasksModel.makeModelIndex(taskItem.index, i) : taskItem.targetModelIndex;
             const title = tasksModel.data(childIdx, Qt.DisplayRole) || taskItem.model.AppName || (i18n("Window %1", i + 1));
             const iconData = tasksModel.data(childIdx, Qt.DecorationRole);
             const isActive = tasksModel.data(childIdx, TaskManager.AbstractTasksModel.IsActive) ?? false;
 
             windowsListModel.append({
-                childRow: i,
+                childRow: childCount > 0 ? i : -1,
                 title: String(title),
                 iconData: iconData || taskItem.model.decoration,
                 isActive: Boolean(isActive)
@@ -105,7 +102,10 @@ PlasmaCore.PopupPlasmaWindow {
         if (!targetTaskItem || !tasksModel) {
             return;
         }
-        const childIdx = tasksModel.makeModelIndex(targetTaskItem.index, childRow);
+        const childIdx = childRow < 0 ? targetTaskItem.targetModelIndex : tasksModel.makeModelIndex(targetTaskItem.index, childRow);
+        if (tasksModel.data(childIdx, TaskManager.AbstractTasksModel.IsMinimized)) {
+            tasksModel.requestToggleMinimized(childIdx);
+        }
         tasksModel.requestActivate(childIdx);
         groupDialog.visible = false;
     }
@@ -114,7 +114,7 @@ PlasmaCore.PopupPlasmaWindow {
         if (!targetTaskItem || !tasksModel) {
             return;
         }
-        const childIdx = tasksModel.makeModelIndex(targetTaskItem.index, childRow);
+        const childIdx = childRow < 0 ? targetTaskItem.targetModelIndex : tasksModel.makeModelIndex(targetTaskItem.index, childRow);
         tasksModel.requestClose(childIdx);
 
         if (windowsListModel.count <= 2) {
@@ -299,7 +299,9 @@ PlasmaCore.PopupPlasmaWindow {
                             groupDialog.activateChild(model.childRow);
                         } else if (mouse.button === Qt.RightButton) {
                             if (targetTaskItem && tasksModel && plasmoidRoot) {
-                                const childIdx = tasksModel.makeModelIndex(targetTaskItem.index, model.childRow);
+                                const childIdx = model.childRow < 0
+                                    ? targetTaskItem.targetModelIndex
+                                    : tasksModel.makeModelIndex(targetTaskItem.index, model.childRow);
                                 const ctxMenu = plasmoidRoot.createContextMenu(delegateItem, childIdx, tasksModel);
                                 if (ctxMenu) {
                                     ctxMenu.show();

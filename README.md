@@ -3,8 +3,8 @@
 A custom KDE Plasma 6 task manager plasmoid that splits open and minimized windows across the panel with distinct presentation and flow:
 
 - **Open Windows (Left Side)**: Displayed from **left to right** with **Icons + Text labels**, indicating active/focused state with Breeze task styling.
-- **Center Elastic Spacer**: Dynamically pushes minimized tasks to the far right edge of the panel (or configurable).
-- **Minimized Windows (Right Side)**: Displayed from **right to left** with compact **Icons only**, featuring subtle minimized indicators and rich hover tooltips.
+- **Center Elastic Spacer**: Pushes minimized tasks to the far right edge of the panel.
+- **Minimized Windows**: Displayed as compact **Icons only** with subtle minimized indicators and rich hover tooltips, docked at the right or bottom edge.
 
 ---
 
@@ -19,10 +19,10 @@ A custom KDE Plasma 6 task manager plasmoid that splits open and minimized windo
      2. **`Compact window list (textual list popup)`**: Clicking a grouped app opens a clean compact list popup showing all windows with icons, full titles, active indicators, and individual close (`X`) buttons.
      3. **`Present Windows / Exposé effect`**: Clicking a grouped app directly triggers KWin's built-in Present Windows (Exposé) grid (`org.kde.KWin.Effect.WindowView1`) for that application's windows.
      4. **`Bring application to foreground`**: Clicking brings all windows of that application to the front, and cycles focus between them on repeated clicks.
-   - **Ungrouped Minimized Windows (macOS Style)**:
-     - Minimized windows **always remain ungrouped** as individual icons on the right side, regardless of grouping settings.
-   - When a window is minimized, it smoothly transitions from the left-side text list to the right-side icon dock.
-   - When clicked on the right side, it unminimizes/activates and immediately returns to the left-side open list.
+   - **Minimized Window Options**:
+     - Minimized windows can be grouped by application, with the configured open-window grouping action used when a group is clicked.
+   - When a window is minimized, it transitions from the open task list to the minimized icon flow.
+   - When clicked, it unminimizes/activates and returns to the open task list.
 
 2. **KWin Minimize/Restore Geometry**:
    - Publishes window geometry coordinates to KWin via `requestPublishDelegateGeometry()`.
@@ -38,8 +38,8 @@ A custom KDE Plasma 6 task manager plasmoid that splits open and minimized windo
 
 4. **Configurable Behavior & Appearance**:
    - Open window grouping strategy selector (No grouping, Compact list, Exposé, Bring to front).
-   - Push minimized windows to right edge (toggle on/off).
-   - Minimized window flow direction (right-to-left toggle).
+   - Group minimized windows by application.
+   - Minimized tasks dock in a right-to-left flow.
    - Min / Max task button width for open windows.
    - Dim minimized icons until hovered.
    - Filter by current screen / virtual desktop / activity.
@@ -50,7 +50,7 @@ A custom KDE Plasma 6 task manager plasmoid that splits open and minimized windo
 ## Installation & Adding to Panel
 
 The widget is installed in:
-`~/.local/share/plasma/plasmoids/org.kde.plasma.splitflowtasks`
+`~/.local/share/plasma/plasmoids/com.example.plasma.splitflowtasks`
 
 ### How to Add:
 1. Right-click on your KDE Plasma panel and select **"Enter Edit Mode"** (or press `Meta+Alt+D`).
@@ -63,3 +63,7 @@ The widget is installed in:
 ```bash
 plasmashell --replace &
 ```
+
+## AI Disclaimer
+
+This plasmoid was developed primarily with Gemini, with some contributions from Claude and GitHub Copilot.

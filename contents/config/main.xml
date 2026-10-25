@@ -32,13 +32,9 @@
       <label>Middle click action: 0 = Close, 1 = ToggleMinimized, 2 = NewInstance</label>
       <default>0</default>
     </entry>
-    <entry name="pushMinimizedToRight" type="Bool">
-      <label>Whether to push minimized windows to the right side of the panel with a spacer.</label>
-      <default>true</default>
-    </entry>
-    <entry name="reverseMinimized" type="Bool">
-      <label>Whether minimized windows flow from right to left.</label>
-      <default>true</default>
+    <entry name="groupMinimizedByApplication" type="Bool">
+      <label>Whether to group minimized windows by application.</label>
+      <default>false</default>
     </entry>
     <entry name="maxTaskWidth" type="Int">
       <label>Maximum width for open task buttons.</label>

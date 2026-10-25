@@ -131,7 +131,9 @@ PlasmoidItem {
         id: minimizedTasksModel
 
         filterNotMinimized: true // Excludes open (non-minimized) windows
-        groupMode: TaskManager.TasksModel.GroupDisabled // ALWAYS ungrouped (ala MacOS X)
+        groupMode: (Plasmoid.configuration.groupMinimizedByApplication ?? false)
+            ? TaskManager.TasksModel.GroupApplications
+            : TaskManager.TasksModel.GroupDisabled
         filterByCurrentVirtualDesktop: Plasmoid.configuration.showOnlyCurrentDesktop ?? true
         filterByScreen: Plasmoid.configuration.showOnlyCurrentScreen ?? false
         filterByActivity: Plasmoid.configuration.showOnlyCurrentActivity ?? true
@@ -168,16 +170,15 @@ PlasmoidItem {
         // Center flexible spacer (pushes minimized tasks to the right)
         Item {
             id: centerSpacerHorizontal
-            Layout.fillWidth: Plasmoid.configuration.pushMinimizedToRight ?? true
+            Layout.fillWidth: true
             Layout.fillHeight: true
-            visible: Plasmoid.configuration.pushMinimizedToRight ?? true
         }
 
-        // Right Section: Minimized Windows (Right-to-Left, Icons only, ALWAYS ungrouped)
+        // Minimized windows dock at the right edge.
         RowLayout {
             id: minimizedTasksRow
             spacing: Kirigami.Units.smallSpacing
-            layoutDirection: (Plasmoid.configuration.reverseMinimized ?? true) ? Qt.RightToLeft : Qt.LeftToRight
+            layoutDirection: Qt.RightToLeft
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: true
 
@@ -192,6 +193,7 @@ PlasmoidItem {
                 }
             }
         }
+
     }
 
     // Vertical panel layout
@@ -207,7 +209,7 @@ PlasmoidItem {
             spacing: Kirigami.Units.smallSpacing
             Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
             Layout.fillWidth: true
-            Layout.fillHeight: !(Plasmoid.configuration.pushMinimizedToRight ?? true)
+            Layout.fillHeight: false
 
             Repeater {
                 model: openTasksModel
@@ -223,12 +225,11 @@ PlasmoidItem {
         // Center spacer for vertical panel
         Item {
             id: centerSpacerVertical
-            Layout.fillHeight: Plasmoid.configuration.pushMinimizedToRight ?? true
+            Layout.fillHeight: true
             Layout.fillWidth: true
-            visible: Plasmoid.configuration.pushMinimizedToRight ?? true
         }
 
-        // Bottom Section: Minimized Windows (Icons only, ALWAYS ungrouped)
+        // Minimized windows dock at the bottom edge.
         ColumnLayout {
             id: minimizedTasksColumn
             spacing: Kirigami.Units.smallSpacing
@@ -245,6 +246,7 @@ PlasmoidItem {
                 }
             }
         }
+
     }
 
     // Shortcut activation support (Meta + number)
