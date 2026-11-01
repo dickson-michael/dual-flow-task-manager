@@ -33,7 +33,7 @@ Item {
     Layout.maximumHeight: vertical ? Kirigami.Units.gridUnit * 2.5 : -1
     Layout.preferredHeight: vertical ? Kirigami.Units.gridUnit * 2.2 : -1
 
-    implicitWidth: vertical ? -1 : Math.max(Plasmoid?.configuration?.minTaskWidth ?? 48, Math.min(width, Plasmoid?.configuration?.maxTaskWidth ?? 220))
+    implicitWidth: vertical ? -1 : (Plasmoid?.configuration?.maxTaskWidth ?? 220)
     implicitHeight: vertical ? Layout.preferredHeight : parent?.height ?? Kirigami.Units.gridUnit * 2
 
     function publishGeometry(): void {

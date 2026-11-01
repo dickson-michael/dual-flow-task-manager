@@ -115,7 +115,6 @@ PlasmoidItem {
         id: openTasksModel
 
         filterMinimized: true // Excludes minimized windows
-        filterByCurrentVirtualDesktop: Plasmoid.configuration.showOnlyCurrentDesktop ?? true
         filterByScreen: Plasmoid.configuration.showOnlyCurrentScreen ?? false
         filterByActivity: Plasmoid.configuration.showOnlyCurrentActivity ?? true
         sortMode: TaskManager.TasksModel.SortManual
@@ -134,10 +133,26 @@ PlasmoidItem {
         groupMode: (Plasmoid.configuration.groupMinimizedByApplication ?? false)
             ? TaskManager.TasksModel.GroupApplications
             : TaskManager.TasksModel.GroupDisabled
-        filterByCurrentVirtualDesktop: Plasmoid.configuration.showOnlyCurrentDesktop ?? true
         filterByScreen: Plasmoid.configuration.showOnlyCurrentScreen ?? false
         filterByActivity: Plasmoid.configuration.showOnlyCurrentActivity ?? true
         sortMode: TaskManager.TasksModel.SortManual
+    }
+
+    // Plasma renamed this property in 6.7, so select the name supported by the running version.
+    Binding {
+        target: openTasksModel
+        property: "filterByCurrentVirtualDesktop" in openTasksModel
+            ? "filterByCurrentVirtualDesktop"
+            : "filterByVirtualDesktop"
+        value: Plasmoid.configuration.showOnlyCurrentDesktop ?? true
+    }
+
+    Binding {
+        target: minimizedTasksModel
+        property: "filterByCurrentVirtualDesktop" in minimizedTasksModel
+            ? "filterByCurrentVirtualDesktop"
+            : "filterByVirtualDesktop"
+        value: Plasmoid.configuration.showOnlyCurrentDesktop ?? true
     }
 
     // Horizontal panel layout

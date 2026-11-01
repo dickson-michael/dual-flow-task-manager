@@ -30,7 +30,6 @@ PlasmaCore.PopupPlasmaWindow {
     }
 
     animated: true
-    hideOnWindowDeactivate: true
 
     removeBorderStrategy: (effectiveLocation === PlasmaCore.Types.Floating)
         ? PlasmaCore.PopupPlasmaWindow.AtScreenEdges
